@@ -1,0 +1,41 @@
+{
+  "name": "gitignore-toggle",
+  "displayName": "gitignore-toggle",
+  "description": "Toggle the explorer.excludeGitIgnore setting",
+  "version": "0.0.1",
+  "publisher": "tugh",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tugh/gitignore-toggle"
+  },
+  "engines": {
+    "vscode": "^1.106.1"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "gitignore-toggle.toggle",
+        "title": "Toggle explorer.excludeGitIgnore"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "gitignore-toggle.toggle",
+        "key": "ctrl+alt+a",
+        "mac": "ctrl+option+a"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.106.1",
+    "@vscode/vsce": "^3.7.1",
+    "typescript": "^5.9.3"
+  }
+}

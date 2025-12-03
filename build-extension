@@ -1,0 +1,40 @@
+#!/bin/bash
+
+set -e
+
+CONTAINER_NAME="gitignore-toggle-build-$$"
+
+# Set the project root directory
+PROJECT_ROOT="$(pwd)"
+
+# Ensure out directory exists and clean it
+mkdir -p "$PROJECT_ROOT/out"
+rm -rf "$PROJECT_ROOT/out"/*
+echo "Prepared out/ directory"
+
+# Run container with mounted project directory and execute build commands
+echo "Building extension..."
+docker run --rm \
+    --name "$CONTAINER_NAME" \
+    -v "$PROJECT_ROOT:/workspace" \
+    -w /workspace \
+    node:20-alpine \
+    sh -c "npm install && npm run compile && npx vsce package --out out/"
+
+# Verify that the expected files exist
+VSIX_FILE=$(ls "$PROJECT_ROOT/out"/*.vsix 2>/dev/null | head -n 1)
+EXTENSION_JS="$PROJECT_ROOT/out/extension.js"
+
+if [ -z "$VSIX_FILE" ]; then
+    echo "Error: .vsix file not found in out/ directory" >&2
+    exit 1
+fi
+
+if [ ! -f "$EXTENSION_JS" ]; then
+    echo "Error: extension.js not found in out/ directory" >&2
+    exit 1
+fi
+
+echo "Extension built successfully. Output files are in the 'out/' directory:"
+echo "  - $(basename "$VSIX_FILE")"
+echo "  - extension.js"
